@@ -1,3 +1,7 @@
+output "data_factory_dataset_parquets_id" {
+  description = "Map of id values across all data_factory_dataset_parquets, keyed the same as var.data_factory_dataset_parquets"
+  value       = { for k, v in azurerm_data_factory_dataset_parquet.data_factory_dataset_parquets : k => v.id }
+}
 output "data_factory_dataset_parquets_additional_properties" {
   description = "Map of additional_properties values across all data_factory_dataset_parquets, keyed the same as var.data_factory_dataset_parquets"
   value       = { for k, v in azurerm_data_factory_dataset_parquet.data_factory_dataset_parquets : k => v.additional_properties }
