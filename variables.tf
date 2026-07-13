@@ -79,66 +79,142 @@ EOT
       type        = optional(string)
     })))
   }))
-  # --- Unconfirmed validation candidates, derived from azurerm_data_factory_dataset_parquet's provider source ---
-  # Not auto-enabled: either a bespoke provider validator we can't safely translate,
-  # or a path that crosses a list-typed block (needs its own for_each wrapping).
-  # Review, translate into a real validation{} block above, and delete once confirmed.
-  # path: name
-  #   source:    [from validate.LinkedServiceDatasetName] regexp.MustCompile(`^[-.+?/<>*%&:\\]+$`).MatchString(value)
-  # path: data_factory_id
-  #   source:    [from factories.ValidateFactoryID] !ok
-  # path: data_factory_id
-  #   source:    [from factories.ValidateFactoryID] err != nil
-  # path: linked_service_name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: azure_blob_fs_location.file_system
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: azure_blob_fs_location.path
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: azure_blob_fs_location.filename
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: azure_blob_storage_location.container
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: azure_blob_storage_location.filename
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: azure_blob_storage_location.path
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: compression_codec
-  #   condition: contains(["bzip2", "gzip", "deflate", "ZipDeflate", "TarGzip", "Tar", "snappy", "lz4"], value)
-  #   message:   must be one of: bzip2, gzip, deflate, ZipDeflate, TarGzip, Tar, snappy, lz4
-  # path: compression_level
-  #   condition: contains(["Optimal", "Fastest"], value)
-  #   message:   must be one of: Optimal, Fastest
-  # path: description
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: folder
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: http_server_location.relative_url
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: http_server_location.filename
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: http_server_location.path
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: schema_column.name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: schema_column.type
-  #   condition: contains(["Byte", "Byte[]", "Boolean", "Date", "DateTime", "DateTimeOffset", "Decimal", "Double", "Guid", "Int16", "Int32", "Int64", "Single", "String", "TimeSpan"], value)
-  #   message:   must be one of: Byte, Byte[], Boolean, Date, DateTime, DateTimeOffset, Decimal, Double, Guid, Int16, Int32, Int64, Single, String, TimeSpan
-  # path: schema_column.description
-  #   condition: length(value) > 0
-  #   message:   must not be empty
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        length(v.linked_service_name) > 0
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.azure_blob_fs_location == null || (v.azure_blob_fs_location.file_system == null || (length(v.azure_blob_fs_location.file_system) > 0))
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.azure_blob_fs_location == null || (v.azure_blob_fs_location.path == null || (length(v.azure_blob_fs_location.path) > 0))
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.azure_blob_fs_location == null || (v.azure_blob_fs_location.filename == null || (length(v.azure_blob_fs_location.filename) > 0))
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.azure_blob_storage_location == null || (length(v.azure_blob_storage_location.container) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.azure_blob_storage_location == null || (v.azure_blob_storage_location.filename == null || (length(v.azure_blob_storage_location.filename) > 0))
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.azure_blob_storage_location == null || (v.azure_blob_storage_location.path == null || (length(v.azure_blob_storage_location.path) > 0))
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.compression_codec == null || (contains(["bzip2", "gzip", "deflate", "ZipDeflate", "TarGzip", "Tar", "snappy", "lz4"], v.compression_codec))
+      )
+    ])
+    error_message = "must be one of: bzip2, gzip, deflate, ZipDeflate, TarGzip, Tar, snappy, lz4"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.compression_level == null || (contains(["Optimal", "Fastest"], v.compression_level))
+      )
+    ])
+    error_message = "must be one of: Optimal, Fastest"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.description == null || (length(v.description) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.folder == null || (length(v.folder) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.http_server_location == null || (length(v.http_server_location.relative_url) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.http_server_location == null || (length(v.http_server_location.filename) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.http_server_location == null || (v.http_server_location.path == null || (length(v.http_server_location.path) > 0))
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.schema_column == null || alltrue([for item in v.schema_column : (length(item.name) > 0)])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.schema_column == null || alltrue([for item in v.schema_column : (item.type == null || (contains(["Byte", "Byte[]", "Boolean", "Date", "DateTime", "DateTimeOffset", "Decimal", "Double", "Guid", "Int16", "Int32", "Int64", "Single", "String", "TimeSpan"], item.type)))])
+      )
+    ])
+    error_message = "must be one of: Byte, Byte[], Boolean, Date, DateTime, DateTimeOffset, Decimal, Double, Guid, Int16, Int32, Int64, Single, String, TimeSpan"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.data_factory_dataset_parquets : (
+        v.schema_column == null || alltrue([for item in v.schema_column : (item.description == null || (length(item.description) > 0))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  # Note: 3 additional provider-side validators are enforced at apply time but not mirrored as validation{} blocks here (bespoke or non-mechanically-translatable).
 }
 
