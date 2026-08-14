@@ -12,11 +12,11 @@ output "data_factory_dataset_parquets_annotations" {
 }
 output "data_factory_dataset_parquets_azure_blob_fs_location" {
   description = "Map of azure_blob_fs_location values across all data_factory_dataset_parquets, keyed the same as var.data_factory_dataset_parquets"
-  value       = { for k, v in azurerm_data_factory_dataset_parquet.data_factory_dataset_parquets : k => v.azure_blob_fs_location if v.azure_blob_fs_location != null && length(v.azure_blob_fs_location) > 0 }
+  value       = { for k, v in azurerm_data_factory_dataset_parquet.data_factory_dataset_parquets : k => one(v.azure_blob_fs_location) if v.azure_blob_fs_location != null && length(v.azure_blob_fs_location) > 0 }
 }
 output "data_factory_dataset_parquets_azure_blob_storage_location" {
   description = "Map of azure_blob_storage_location values across all data_factory_dataset_parquets, keyed the same as var.data_factory_dataset_parquets"
-  value       = { for k, v in azurerm_data_factory_dataset_parquet.data_factory_dataset_parquets : k => v.azure_blob_storage_location if v.azure_blob_storage_location != null && length(v.azure_blob_storage_location) > 0 }
+  value       = { for k, v in azurerm_data_factory_dataset_parquet.data_factory_dataset_parquets : k => one(v.azure_blob_storage_location) if v.azure_blob_storage_location != null && length(v.azure_blob_storage_location) > 0 }
 }
 output "data_factory_dataset_parquets_compression_codec" {
   description = "Map of compression_codec values across all data_factory_dataset_parquets, keyed the same as var.data_factory_dataset_parquets"
@@ -40,7 +40,7 @@ output "data_factory_dataset_parquets_folder" {
 }
 output "data_factory_dataset_parquets_http_server_location" {
   description = "Map of http_server_location values across all data_factory_dataset_parquets, keyed the same as var.data_factory_dataset_parquets"
-  value       = { for k, v in azurerm_data_factory_dataset_parquet.data_factory_dataset_parquets : k => v.http_server_location if v.http_server_location != null && length(v.http_server_location) > 0 }
+  value       = { for k, v in azurerm_data_factory_dataset_parquet.data_factory_dataset_parquets : k => one(v.http_server_location) if v.http_server_location != null && length(v.http_server_location) > 0 }
 }
 output "data_factory_dataset_parquets_linked_service_name" {
   description = "Map of linked_service_name values across all data_factory_dataset_parquets, keyed the same as var.data_factory_dataset_parquets"
